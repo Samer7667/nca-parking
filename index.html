@@ -645,9 +645,219 @@
           font-size: 1.2rem;
         }
       }
+      /* =========================
+   شاشة الصيانة الاحترافية
+   ========================= */
+
+.maintenance-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(42, 86, 198, 0.18), transparent 35%),
+    radial-gradient(circle at 80% 80%, rgba(40, 167, 69, 0.12), transparent 35%),
+    linear-gradient(135deg, #f5f8fc 0%, #eaf1f8 100%);
+}
+
+.maintenance-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(21, 87, 166, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 87, 166, 0.035) 1px, transparent 1px);
+  background-size: 35px 35px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.8), transparent);
+  pointer-events: none;
+}
+
+.maintenance-card {
+  position: relative;
+  z-index: 5;
+  width: min(680px, calc(100% - 32px));
+  padding: 42px 30px;
+  text-align: center;
+  border-radius: 28px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow:
+    0 25px 80px rgba(26, 58, 143, 0.18),
+    0 8px 30px rgba(0,0,0,0.06);
+  backdrop-filter: blur(14px);
+}
+
+.maintenance-bell {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a3a8f, #2a56c6);
+  color: white;
+  font-size: 34px;
+  box-shadow: 0 12px 28px rgba(26, 58, 143, 0.28);
+  animation: bellPulse 2s ease-in-out infinite;
+}
+
+.maintenance-card h1 {
+  margin: 0 0 14px;
+  color: #1a3a8f;
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+  font-weight: 800;
+}
+
+.maintenance-card p {
+  margin: 0 auto 12px;
+  max-width: 560px;
+  color: #5f6b7a;
+  font-size: 1.08rem;
+  line-height: 1.9;
+}
+
+.maintenance-note {
+  margin-top: 18px !important;
+  color: #1a3a8f !important;
+  font-weight: 700;
+}
+
+.maintenance-animation {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cloud {
+  position: absolute;
+  width: 150px;
+  height: 48px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.72);
+  filter: blur(0.2px);
+  box-shadow: 0 10px 30px rgba(255,255,255,0.45);
+  opacity: 0.8;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::before {
+  width: 62px;
+  height: 62px;
+  left: 22px;
+  bottom: 12px;
+}
+
+.cloud::after {
+  width: 82px;
+  height: 82px;
+  right: 22px;
+  bottom: 8px;
+}
+
+.cloud-1 {
+  top: 15%;
+  left: -190px;
+  transform: scale(1.1);
+  animation: cloudMove 22s linear infinite;
+}
+
+.cloud-2 {
+  top: 30%;
+  left: -230px;
+  transform: scale(0.75);
+  opacity: 0.45;
+  animation: cloudMove 30s linear infinite 5s;
+}
+
+.cloud-3 {
+  top: 72%;
+  left: -210px;
+  transform: scale(0.95);
+  opacity: 0.5;
+  animation: cloudMove 26s linear infinite 10s;
+}
+
+@keyframes cloudMove {
+  0% {
+    left: -220px;
+  }
+  100% {
+    left: calc(100% + 220px);
+  }
+}
+
+@keyframes bellPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 12px 28px rgba(26, 58, 143, 0.28);
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 16px 38px rgba(26, 58, 143, 0.40);
+  }
+}
+
+@media (max-width: 600px) {
+  .maintenance-card {
+    padding: 34px 20px;
+    border-radius: 22px;
+  }
+
+  .maintenance-bell {
+    width: 68px;
+    height: 68px;
+    font-size: 28px;
+  }
+
+  .maintenance-card p {
+    font-size: 1rem;
+  }
+}
     </style>
   </head>
   <body>
+    <!-- شاشة الصيانة -->
+<div class="maintenance-overlay">
+
+  <div class="maintenance-animation">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <div class="maintenance-card">
+
+    <div class="maintenance-bell">
+      <i class="fas fa-tools"></i>
+    </div>
+
+    <h1>الموقع تحت الصيانة</h1>
+
+    <p>
+      نعمل حاليًا على تطوير وتحديث موقع
+      <strong>مواقف سيارات الأكاديمية الوطنية للبناء</strong>
+      لتحسين تجربتكم وتقديم خدمة أفضل.
+    </p>
+
+    <p class="maintenance-note">
+      نرجوا منك الانتظار، وسيعود الموقع للعمل قريبًا.
+    </p>
+
+  </div>
+
+</div>
     <!-- مؤشر وضع المدير -->
     <div class="admin-mode-indicator" id="adminModeIndicator">
       <i class="fas fa-user-shield"></i>
