@@ -1,11 +1,14 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>سياسة الخصوصية | مواقف سيارات الأكاديمية الوطنية للبناء</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="description" content="سياسة الخصوصية لنظام مواقف سيارات الأكاديمية الوطنية للبناء">
-  <style>
+  
+
+
+
+<style>
 :root{
   --navy:#0b2f63;
   --blue:#1557a6;
@@ -86,10 +89,180 @@ h2{margin:14px 0 10px;color:var(--navy);font-size:clamp(1.8rem,4vw,2.4rem)}
 footer{max-width:1050px;margin:18px auto 40px;padding:0 18px;color:#76839a;text-align:center;font-size:.84rem}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.hero{padding:22px}.top-inner{align-items:flex-start;flex-direction:column}.back{width:100%;text-align:center}}
 </style>
-</head>
+
+<style id="index-theme-matched">
+  :root{
+    --bg-primary:#f3f7fb;
+    --bg-secondary:#ffffff;
+    --bg-elevated:rgba(255,255,255,.92);
+    --text-primary:#172033;
+    --text-secondary:#64748b;
+    --text-muted:#8b98aa;
+    --accent-blue:#123f8f;
+    --accent-blue-light:#2c67d8;
+    --accent-green:#16a05d;
+    --accent-red:#d9364f;
+    --accent-yellow:#f2b705;
+    --accent-info:#168ca5;
+    --border-color:#dbe3ee;
+    --input-bg:#ffffff;
+    --hover-bg:#f4f7fb;
+    --header-shadow:0 10px 34px rgba(16,42,82,.12);
+    --card-shadow:0 12px 35px rgba(18,52,96,.09);
+  }
+
+  [data-theme="dark"]{
+    --bg-primary:#0b1220;
+    --bg-secondary:#121b2b;
+    --bg-elevated:rgba(18,27,43,.94);
+    --text-primary:#f4f7fb;
+    --text-secondary:#aab6c7;
+    --text-muted:#7f8ca0;
+    --accent-blue:#79a6ff;
+    --accent-blue-light:#3e76e5;
+    --accent-green:#45cf8a;
+    --accent-red:#ff6b7c;
+    --accent-yellow:#ffd45a;
+    --accent-info:#59c4da;
+    --border-color:#27344a;
+    --input-bg:#0f1726;
+    --hover-bg:#182337;
+    --header-shadow:0 16px 45px rgba(0,0,0,.34);
+    --card-shadow:0 18px 48px rgba(0,0,0,.28);
+  }
+
+  html{color-scheme:light;}
+  html[data-theme="dark"]{color-scheme:dark;}
+
+  body{
+    background:
+      radial-gradient(circle at 12% 0%,rgba(44,103,216,.10),transparent 28%),
+      radial-gradient(circle at 88% 100%,rgba(22,160,93,.07),transparent 24%),
+      var(--bg-primary);
+    color:var(--text-primary);
+    transition:background-color .35s ease,color .35s ease;
+  }
+
+  .top{position:relative;box-shadow:var(--header-shadow);}
+  .top-inner{position:relative;padding-left:82px;}
+
+  .hero{
+    background:var(--bg-elevated);
+    border-color:var(--border-color);
+    box-shadow:var(--card-shadow);
+    color:var(--text-primary);
+    transition:background-color .35s ease,border-color .35s ease,box-shadow .35s ease,color .35s ease;
+  }
+
+  .section{
+    background:var(--bg-secondary);
+    border-color:var(--border-color);
+    color:var(--text-primary);
+    box-shadow:var(--card-shadow);
+    transition:background-color .35s ease,border-color .35s ease,box-shadow .35s ease,color .35s ease;
+  }
+
+  h2,.section h3{color:var(--accent-blue);}
+  .lead,.section p,.section li{color:var(--text-primary);}
+  .meta{color:var(--text-secondary);}
+  .meta span{
+    background:var(--hover-bg);
+    border-color:var(--border-color);
+    color:var(--text-secondary);
+  }
+  .note{
+    background:rgba(22,160,93,.08);
+    border-right-color:var(--accent-green);
+    color:var(--text-primary);
+  }
+  footer{color:var(--text-secondary);}
+
+  [data-theme="dark"] .hero,
+  [data-theme="dark"] .section{
+    background:var(--bg-secondary);
+    border-color:var(--border-color);
+    color:var(--text-primary);
+    box-shadow:var(--card-shadow);
+  }
+  [data-theme="dark"] h2,
+  [data-theme="dark"] .section h3{color:var(--accent-blue);}
+  [data-theme="dark"] .lead,
+  [data-theme="dark"] .section p,
+  [data-theme="dark"] .section li{color:var(--text-primary);}
+  [data-theme="dark"] .note{
+    background:rgba(69,207,138,.09);
+    color:var(--text-primary);
+    border-right-color:var(--accent-green);
+  }
+  [data-theme="dark"] .meta span{
+    background:var(--hover-bg);
+    border-color:var(--border-color);
+    color:var(--text-secondary);
+  }
+
+  /* زر الوضع بنفس بساطة ورقي الموقع الرئيسي */
+  .legal-theme-toggle{
+    position:absolute;
+    top:50%;
+    left:18px;
+    width:52px;
+    height:52px;
+    transform:translateY(-50%);
+    padding:0;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:16px;
+    background:rgba(255,255,255,.16);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    z-index:30;
+    box-shadow:0 14px 32px rgba(0,0,0,.18);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    transition:transform .25s ease,background .25s ease,box-shadow .25s ease;
+  }
+  .legal-theme-toggle:hover{
+    transform:translateY(-50%) scale(1.04);
+    background:rgba(255,255,255,.25);
+    box-shadow:0 18px 40px rgba(0,0,0,.24);
+  }
+  .legal-theme-toggle:active{transform:translateY(-50%) scale(.97);}
+  .legal-theme-toggle:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 4px rgba(121,166,255,.22),0 14px 32px rgba(0,0,0,.18);
+  }
+  .legal-theme-toggle i{
+    font-size:1.24rem;
+    transition:transform .35s ease,color .25s ease;
+  }
+  [data-theme="dark"] .legal-theme-toggle{
+    background:rgba(15,23,38,.76);
+    border-color:rgba(121,166,255,.22);
+  }
+  [data-theme="dark"] .legal-theme-toggle i{
+    color:var(--accent-yellow);
+    transform:rotate(180deg);
+  }
+
+  @media(max-width:760px){
+    .top-inner{padding-left:64px;}
+    .legal-theme-toggle{left:10px;width:48px;height:48px;border-radius:15px;}
+  }
+  @media(max-width:420px){
+    .top-inner{padding-left:56px;}
+    .legal-theme-toggle{left:8px;width:44px;height:44px;border-radius:13px;}
+  }
+</style>
+
+</head></head>
 <body>
 <header class="top">
-  <div class="top-inner">
+  <button class="legal-theme-toggle" id="legalThemeToggleBtn" type="button"
+          aria-label="تفعيل الوضع الليلي" title="تفعيل الوضع الليلي">
+    <i class="fas fa-moon" aria-hidden="true"></i>
+  </button>
+<div class="top-inner">
     <div class="brand">
       <div class="mark">🛡️</div>
       <div>
@@ -199,5 +372,42 @@ footer{max-width:1050px;margin:18px auto 40px;padding:0 18px;color:#76839a;text-
 </main>
 
 <footer>© 2026 نظام مواقف سيارات الأكاديمية الوطنية للبناء</footer>
+
+<script id="legal-theme-script">
+(() => {
+  const root = document.documentElement;
+  const button = document.getElementById("legalThemeToggleBtn");
+  const key = "parking_theme";
+
+  function theme() {
+    const saved = localStorage.getItem(key);
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function render(mode) {
+    const dark = mode === "dark";
+    root.setAttribute("data-theme", dark ? "dark" : "light");
+    root.style.colorScheme = dark ? "dark" : "light";
+    if (button) {
+      const icon = button.querySelector("i");
+      if (icon) icon.className = dark ? "fas fa-sun" : "fas fa-moon";
+      button.setAttribute("aria-label", dark ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الليلي");
+      button.setAttribute("title", dark ? "التحويل إلى الوضع الفاتح" : "التحويل إلى الوضع الليلي");
+    }
+  }
+
+  render(theme());
+
+  button?.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    localStorage.setItem(key, next);
+    render(next);
+  });
+
+  window.addEventListener("storage", () => render(theme()));
+})();
+</script>
+
 </body>
 </html>
