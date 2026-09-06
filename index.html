@@ -485,9 +485,8 @@
       }
 
       /* إخفاء الأزرار الأصلية من الشريط العلوي */
-      #authButtons {
-        display: none !important;
-      }
+      #authButtons { display:none !important; }
+      #adminDots { display:none !important; }
 
       /* إصلاح المسافة في الترويسة */
       .header-content {
@@ -1071,6 +1070,28 @@
         font-weight: 500;
       }
 
+      .site-menu-admin-login{width:100%;display:flex;align-items:center;gap:13px;padding:11px 13px;margin-top:4px;border:1px solid transparent;border-radius:17px;background:transparent;color:var(--text-secondary);cursor:pointer;font:inherit;text-align:right;transition:background .2s ease,transform .2s ease,border-color .2s ease;}
+      .site-menu-admin-login:hover{background:rgba(42,86,198,.07);border-color:rgba(42,86,198,.12);transform:translateX(-2px);}
+      .site-menu-admin-login .menu-icon{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:var(--accent-blue);background:rgba(42,86,198,.09);}
+      .site-menu-admin-login .site-menu-link-text{flex:1;min-width:0;}
+      .site-menu-admin-login strong{display:block;color:var(--text-primary);font-size:.9rem;}
+      .site-menu-admin-login small{display:block;margin-top:2px;color:var(--text-secondary);font-size:.72rem;}
+      .site-menu-admin-login[hidden],.site-menu-admin[hidden]{display:none !important;}
+
+      .site-menu-admin { margin-top:8px; padding:14px; border-radius:20px; background:linear-gradient(135deg,rgba(18,63,143,.08),rgba(22,160,93,.07)); border:1px solid rgba(44,103,216,.16); }
+      .site-menu-admin-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+      .site-menu-admin-head > i { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,var(--accent-blue),var(--accent-blue-light)); }
+      .site-menu-admin-head strong { display:block; color:var(--text-primary); font-size:.9rem; }
+      .site-menu-admin-head span { display:block; color:var(--text-secondary); font-size:.72rem; margin-top:2px; }
+      .site-menu-admin-actions { display:grid; gap:8px; }
+      .site-menu-admin-btn { width:100%; min-height:44px; border:1px solid var(--border-color); border-radius:13px; display:flex; align-items:center; gap:10px; padding:10px 12px; cursor:pointer; background:var(--bg-secondary); color:var(--text-primary); font:inherit; font-weight:700; text-align:right; transition:transform .18s ease, box-shadow .18s ease; }
+      .site-menu-admin-btn:hover { transform:translateY(-1px); box-shadow:0 8px 18px rgba(18,52,96,.10); }
+      .site-menu-admin-btn i { width:30px; text-align:center; }
+      .site-menu-admin-btn.connection i { color:var(--accent-info); }
+      .site-menu-admin-btn.danger i { color:var(--accent-red); }
+      .site-menu-admin-btn.logout i { color:var(--accent-yellow); }
+      [data-theme="dark"] .site-menu-admin { background:linear-gradient(135deg,rgba(121,166,255,.10),rgba(69,207,138,.07)); }
+
       .site-menu-footer {
         margin-top: auto;
         padding-top: 14px;
@@ -1591,6 +1612,24 @@
         </a>
       </nav>
 
+      <button type="button" class="site-menu-admin-login" id="siteMenuAdminLoginBtn">
+        <span class="menu-icon"><i class="fas fa-user-shield"></i></span>
+        <span class="site-menu-link-text"><strong>دخول المدير</strong><small>دخول إداري خاص</small></span>
+        <i class="fas fa-chevron-left" style="opacity:.45"></i>
+      </button>
+
+      <div class="site-menu-admin" id="siteMenuAdminTools" hidden>
+        <div class="site-menu-admin-head">
+          <i class="fas fa-user-shield"></i>
+          <div><strong>أدوات المدير</strong><span>تظهر فقط بعد تسجيل دخول المدير</span></div>
+        </div>
+        <div class="site-menu-admin-actions">
+          <button type="button" class="site-menu-admin-btn connection" id="siteMenuTestConnectionBtn"><i class="fas fa-plug-circle-check"></i><span>التأكد من الاقتران مع Supabase</span></button>
+          <button type="button" class="site-menu-admin-btn danger" id="siteMenuResetBtn"><i class="fas fa-trash-can"></i><span>تصفير البيانات</span></button>
+          <button type="button" class="site-menu-admin-btn logout" id="siteMenuLogoutBtn"><i class="fas fa-right-from-bracket"></i><span>تسجيل خروج المدير</span></button>
+        </div>
+      </div>
+
       <div class="site-menu-footer">
         <div class="site-menu-security">
           <i class="fas fa-circle-check"></i>
@@ -1760,7 +1799,7 @@
             <button
               class="btn btn-primary"
               id="myCarsBtn"
-              style="display: none"
+              type="button"
             >
               <i class="fas fa-car"></i> سياراتي المسجلة
             </button>
@@ -1834,7 +1873,7 @@
             <!-- سيارات المستخدم تظهر هنا -->
           </div>
           <div style="text-align: center; margin-top: 30px">
-            <button class="btn btn-primary" onclick="showPage('home')">
+            <button class="btn btn-primary" id="backHomeBtn" type="button">
               <i class="fas fa-arrow-right"></i> العودة للرئيسية
             </button>
           </div>
@@ -1850,13 +1889,14 @@
         </h2>
         <form id="adminLoginForm">
           <div class="form-group">
-            <label>اسم المستخدم</label>
+            <label>البريد الإلكتروني للمدير</label>
             <input
-              type="text"
-              id="adminUsername"
+              type="email"
+              id="adminEmail"
               class="form-control"
               required
-              placeholder="اسم المستخدم"
+              autocomplete="username"
+              placeholder="البريد الإلكتروني"
             />
           </div>
 
@@ -2231,6 +2271,30 @@
         });
       }
 
+      function setupAdminMenuTools() {
+        const loginBtn = document.getElementById("siteMenuAdminLoginBtn");
+        const testBtn = document.getElementById("siteMenuTestConnectionBtn");
+        const resetBtn = document.getElementById("siteMenuResetBtn");
+        const logoutBtn = document.getElementById("siteMenuLogoutBtn");
+
+        if (loginBtn) loginBtn.addEventListener("click", () => {
+          if (!isAdmin) {
+            closeSiteMenuSafely();
+            showModal("adminLoginModal");
+            setTimeout(() => document.getElementById("adminEmail")?.focus(), 100);
+          }
+        });
+        if (testBtn) testBtn.addEventListener("click", async () => { closeSiteMenuSafely(); await testConnection(); });
+        if (resetBtn) resetBtn.addEventListener("click", () => { closeSiteMenuSafely(); if (isAdmin && confirm("⚠️ أنت مدير النظام. هل أنت متأكد من تصفير جميع البيانات؟")) resetAllData(); });
+        if (logoutBtn) logoutBtn.addEventListener("click", async () => { closeSiteMenuSafely(); await adminLogout(); });
+      }
+
+      function closeSiteMenuSafely() {
+        const close = document.getElementById("siteMenuClose");
+        const toggle = document.getElementById("siteMenuToggle");
+        if (close) close.click(); else if (toggle?.classList.contains("active")) toggle.click();
+      }
+
       // تهيئة التطبيق
       document.addEventListener("DOMContentLoaded", async function () {
         console.log("بدء تشغيل نظام مواقف السيارات");
@@ -2241,7 +2305,10 @@
         // تهيئة معرف الجهاز
         initializeDeviceId();
 
+        await initializeAdminAuth();
+
         setupSiteMenu();
+        setupAdminMenuTools();
 
         // إعداد المستمعين للأحداث
         setupEventListeners();
@@ -2349,6 +2416,10 @@
           .getElementById("myCarsBtn")
           .addEventListener("click", () => showMyCars());
 
+        document
+          .getElementById("backHomeBtn")
+          .addEventListener("click", () => showPage("home"));
+
         // زر تبديل الوضع الليلي
         document
           .getElementById("themeToggleBtn")
@@ -2395,41 +2466,21 @@
       function updateAdminDots() {
         const adminDots = document.getElementById("adminDots");
         const adminIndicator = document.getElementById("adminModeIndicator");
+        const adminTools = document.getElementById("siteMenuAdminTools");
+        const adminLoginBtn = document.getElementById("siteMenuAdminLoginBtn");
+        if (adminDots) adminDots.style.display = "none";
+        if (adminIndicator) adminIndicator.classList.toggle("active", isAdmin);
+        if (adminTools) adminTools.hidden = !isAdmin;
+        if (adminLoginBtn) adminLoginBtn.hidden = isAdmin;
+      }
 
-        // إخفاء النقاط عن المستخدمين العاديين
-        if (!isAdmin) {
-          adminDots.style.display = "none";
-          adminIndicator.classList.remove("active");
-        } else {
-          adminDots.style.display = "flex";
-          adminIndicator.classList.add("active");
-        }
+      function showResetDot() {
+        const adminTools = document.getElementById("siteMenuAdminTools");
+        if (adminTools) adminTools.hidden = !isAdmin;
       }
 
       // دالة لإظهار نقطة تصفير البيانات فقط للمدير
-      function showResetDot() {
-        const adminDots = document.getElementById("adminDots");
-
-        // إضافة النقطة الثالثة (تصفير البيانات) فقط للمدير
-        if (isAdmin && !document.getElementById("resetDot")) {
-          const resetDot = document.createElement("div");
-          resetDot.className = "admin-dot reset";
-          resetDot.id = "resetDot";
-          resetDot.setAttribute("data-tooltip", "تصفير البيانات (للمدير فقط)");
-          resetDot.onclick = () => {
-            if (
-              confirm(
-                "⚠️ أنت مدير النظام. هل أنت متأكد من تصفير جميع البيانات؟",
-              )
-            ) {
-              resetAllData();
-            }
-          };
-          adminDots.appendChild(resetDot);
-        }
-      }
-
-      // اختبار الاتصال بقاعدة البيانات
+            // اختبار الاتصال بقاعدة البيانات
       async function testConnection() {
         try {
           console.log("🔍 اختبار الاتصال بـ Supabase...");
@@ -2906,8 +2957,11 @@
             .eq("device_id", deviceId)
             .eq("status", "active");
 
-          if (!error && data && data.length > 0) {
-            document.getElementById("myCarsBtn").style.display = "inline-flex";
+          const myCarsBtn = document.getElementById("myCarsBtn");
+          if (myCarsBtn) {
+            myCarsBtn.innerHTML = !error && data && data.length > 0
+              ? `<i class="fas fa-car"></i> سياراتي المسجلة (${data.length})`
+              : '<i class="fas fa-car"></i> سياراتي المسجلة';
           }
         } catch (error) {
           console.error("خطأ في التحقق من سياراتي:", error);
@@ -3002,59 +3056,88 @@
           showPage("myCarsPage");
         } catch (error) {
           console.error("خطأ في تحميل سياراتي:", error);
-          showAlert("mainAlert", "حدث خطأ في تحميل سياراتك", "danger");
+          showPage("myCarsPage");
+          showAlert("mainAlert", "تعذر تحميل سياراتك الآن؛ تأكد من اتصال النظام ثم حاول مرة أخرى.", "danger");
         }
       }
 
-      // تسجيل دخول المدير
+      // التحقق من جلسة المدير عبر Supabase Auth
+      async function initializeAdminAuth() {
+        try {
+          const { data, error } = await supabaseClient.auth.getSession();
+          if (error) throw error;
+
+          isAdmin = !!data.session;
+          updateAdminDots();
+          if (isAdmin) showResetDot();
+
+          supabaseClient.auth.onAuthStateChange((event, session) => {
+            isAdmin = !!session;
+            updateAdminDots();
+            if (isAdmin) showResetDot();
+            else showResetDot();
+          });
+        } catch (error) {
+          console.error("خطأ في التحقق من جلسة المدير:", error);
+          isAdmin = false;
+          updateAdminDots();
+        }
+      }
+
+      // تسجيل دخول المدير عبر Supabase Auth
       async function adminLogin() {
-        const username = document.getElementById("adminUsername").value;
+        const email = document.getElementById("adminEmail").value.trim();
         const password = document.getElementById("adminPassword").value;
 
-        // بيانات المدير (يمكن تغييرها)
-        const adminUsername = "admin";
-        const adminPassword = "admin123";
+        if (!email || !password) {
+          showAlert("adminLoginAlert","❌ أدخل البريد الإلكتروني وكلمة المرور","danger");
+          return;
+        }
 
-        if (username === adminUsername && password === adminPassword) {
+        const submitBtn = document.querySelector("#adminLoginForm button[type='submit']");
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = "0.7"; }
+
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          if (!data.session) throw new Error("لم يتم إنشاء جلسة دخول");
+
           isAdmin = true;
-          showAlert(
-            "adminLoginAlert",
-            "✅ تم تسجيل دخول المدير بنجاح",
-            "success",
-          );
-
-          // تحديث عناصر التحكم
           updateAdminDots();
           showResetDot();
+          showAlert("adminLoginAlert","✅ تم تسجيل دخول المدير بنجاح","success");
 
           setTimeout(() => {
             closeModal("adminLoginModal");
             loadCars();
-            showAlert("mainAlert", "🔓 تم تفعيل وضع المدير", "success");
-          }, 1500);
-        } else {
-          showAlert(
-            "adminLoginAlert",
-            "❌ اسم المستخدم أو كلمة المرور غير صحيحة",
-            "danger",
-          );
+            showAlert("mainAlert","🔓 تم تفعيل وضع المدير","success");
+          }, 700);
+        } catch (error) {
+          console.error("خطأ في تسجيل دخول المدير:", error);
+          let message = "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة";
+          if (error?.message?.toLowerCase().includes("email not confirmed")) {
+            message = "❌ يجب تأكيد البريد الإلكتروني أولًا من رسالة Supabase.";
+          }
+          showAlert("adminLoginAlert", message, "danger");
+        } finally {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = "1"; }
         }
       }
 
-      // تسجيل خروج المدير
-      function adminLogout() {
-        isAdmin = false;
-
-        // إخفاء نقطة تصفير البيانات
-        const resetDot = document.getElementById("resetDot");
-        if (resetDot) {
-          resetDot.remove();
+      // تسجيل خروج المدير عبر Supabase Auth
+      async function adminLogout() {
+        try {
+          const { error } = await supabaseClient.auth.signOut();
+          if (error) throw error;
+        } catch (error) {
+          console.error("خطأ في تسجيل خروج المدير:", error);
+        } finally {
+          isAdmin = false;
+          updateAdminDots();
+          showResetDot();
+          loadCars();
+          showAlert("mainAlert","🔒 تم تسجيل الخروج من وضع المدير","info");
         }
-
-        // تحديث عناصر التحكم
-        updateAdminDots();
-        loadCars();
-        showAlert("mainAlert", "🔒 تم إيقاف وضع المدير", "info");
       }
 
       // إضافة سيارة جديدة
@@ -3355,11 +3438,12 @@
 
       // وظائف المساعدة
       function showPage(pageId) {
-        document.querySelectorAll(".page").forEach((page) => {
-          page.classList.remove("active");
-        });
-        document.getElementById(pageId).classList.add("active");
+        const target = document.getElementById(pageId);
+        if (!target) return;
+        document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
+        target.classList.add("active");
         currentPage = pageId;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       function showModal(modalId) {
