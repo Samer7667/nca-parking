@@ -1598,22 +1598,30 @@
         }
       }
 
-      /* ===== وضع الليل/الفاتح: أعلى اليسار مقابل زر القائمة ===== */
+      /* ===== زر الوضع: مرآة احترافية لزر القائمة داخل الهيدر ===== */
       .theme-toggle-btn {
-        position: fixed !important;
-        top: 18px !important;
+        position: absolute !important;
+        top: 50% !important;
         left: 18px !important;
         right: auto !important;
         bottom: auto !important;
         width: 52px !important;
         height: 52px !important;
-        z-index: 3601 !important;
+        transform: translateY(-50%) !important;
+        z-index: 3600 !important;
+      }
+
+      .theme-toggle-btn:hover {
+        transform: translateY(-50%) scale(1.04) !important;
+      }
+
+      .theme-toggle-btn:active {
+        transform: translateY(-50%) scale(.97) !important;
       }
 
       @media (max-width: 768px) {
         .theme-toggle-btn {
-          top: 14px !important;
-          left: 14px !important;
+          left: 12px !important;
           width: 48px !important;
           height: 48px !important;
         }
@@ -1621,13 +1629,65 @@
 
       @media (max-width: 480px) {
         .theme-toggle-btn {
-          top: 9px !important;
-          left: 9px !important;
+          left: 8px !important;
           width: 45px !important;
           height: 45px !important;
         }
       }
 
+
+      /* زر النزول السريع لأسفل الصفحة */
+      .scroll-bottom-btn {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        z-index: 3200;
+        min-width: 118px;
+        height: 46px;
+        padding: 0 16px;
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-light));
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 800;
+        box-shadow: 0 12px 28px rgba(10,35,80,.22);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: opacity .25s ease, transform .25s ease, box-shadow .25s ease;
+      }
+      .scroll-bottom-btn:hover {
+        transform: translateX(-50%) translateY(-2px);
+        box-shadow: 0 16px 34px rgba(10,35,80,.28);
+      }
+      .scroll-bottom-btn:active {
+        transform: translateX(-50%) scale(.97);
+      }
+      .scroll-bottom-btn i {
+        transition: transform .25s ease;
+      }
+      .scroll-bottom-btn:hover i {
+        transform: translateY(3px);
+      }
+      .scroll-bottom-btn.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(10px);
+      }
+      @media (max-width: 600px) {
+        .scroll-bottom-btn {
+          bottom: 16px;
+          min-width: 108px;
+          height: 44px;
+          font-size: .88rem;
+        }
+      }
 </style>
   </head>
   <body>
@@ -1781,6 +1841,10 @@
       </button>
     </div>
 
+
+    <!-- الترويسة -->
+    <header id="mainHeader">
+      <div class="container header-content">
     <!-- زر تبديل الوضع الليلي/الفاتح -->
     <button
       class="theme-toggle-btn"
@@ -1792,9 +1856,6 @@
       <i class="fas fa-moon"></i>
     </button>
 
-    <!-- الترويسة -->
-    <header id="mainHeader">
-      <div class="container header-content">
 <button
       class="site-menu-toggle"
       id="siteMenuToggle"
@@ -2212,8 +2273,20 @@
       </div>
     </div>
 
+    <!-- زر الوصول السريع لأسفل الصفحة -->
+    <button
+      id="scrollToBottomBtn"
+      class="scroll-bottom-btn"
+      type="button"
+      aria-label="الانتقال إلى أسفل الصفحة"
+      title="الانتقال إلى أسفل الصفحة"
+    >
+      <i class="fas fa-arrow-down"></i>
+      <span>للأسفل</span>
+    </button>
+
     <!-- التذييل -->
-    <footer>
+    <footer id="siteFooter">
       <div class="container">
         <div style="text-align: center">
           <!-- العنوان -->
@@ -2297,6 +2370,31 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      // زر النزول السريع لأسفل الصفحة
+      function setupScrollBottomButton() {
+        const btn = document.getElementById("scrollToBottomBtn");
+        const footer = document.getElementById("siteFooter");
+        if (!btn || !footer) return;
+
+        const updateVisibility = () => {
+          const nearBottom =
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 260;
+          btn.classList.toggle("hidden", nearBottom);
+        };
+
+        btn.addEventListener("click", () => {
+          footer.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        window.addEventListener("scroll", updateVisibility, { passive: true });
+        window.addEventListener("resize", updateVisibility);
+        updateVisibility();
+      }
+
+    
+    </script>
     <script>
       // استبدل هذه القيم ببيانات مشروعك في Supabase
       const SUPABASE_URL = "https://wqdbkivyyptjryvfdydl.supabase.co";
@@ -2402,6 +2500,8 @@
 
         setupSiteMenu();
         setupAdminMenuTools();
+
+        setupScrollBottomButton();
 
         // إعداد المستمعين للأحداث
         setupEventListeners();
