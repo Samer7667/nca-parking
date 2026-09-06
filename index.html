@@ -1540,7 +1540,64 @@
         }
       }
 
-    </style>
+    
+      /* شريط البحث والتحديث */
+      .search-toolbar {
+        display: flex;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .search-action-btn {
+        min-width: 112px;
+        justify-content: center;
+      }
+
+      .search-hint {
+        min-height: 24px;
+        margin-top: 8px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: .82rem;
+        opacity: 0;
+        transition: opacity .2s ease;
+      }
+
+      .search-hint.show {
+        opacity: 1;
+      }
+
+      .search-action-btn.is-loading i {
+        animation: searchRefreshSpin .75s linear infinite;
+      }
+
+      @keyframes searchRefreshSpin {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 768px) {
+        .search-toolbar {
+          flex-wrap: wrap;
+        }
+
+        .search-toolbar #searchInput {
+          flex: 1 1 100% !important;
+        }
+
+        .search-action-btn {
+          flex: 1 1 0;
+          min-width: 0;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .search-action-btn {
+          min-height: 46px;
+          padding-inline: 12px;
+          font-size: .9rem;
+        }
+      }
+</style>
   </head>
   <body>
     <div class="site-menu-backdrop" id="siteMenuBackdrop"></div>
@@ -1807,24 +1864,29 @@
 
           <!-- قسم البحث -->
           <div style="margin: 30px 0">
-            <div style="display: flex; gap: 10px">
+            <div class="search-toolbar">
               <input
                 type="text"
                 id="searchInput"
                 placeholder="ابحث برقم اللوحة أو اسم المالك..."
+                aria-label="البحث في السيارات المسجلة"
                 style="
                   flex: 1;
                   padding: 15px;
                   border: 2px solid var(--border-color);
-                  border-radius: 8px;
+                  border-radius: 12px;
                   background-color: var(--input-bg);
                   color: var(--text-primary);
                 "
               />
-              <button class="btn btn-primary" id="searchBtn">
+              <button class="btn btn-primary search-action-btn" id="searchBtn" type="button">
                 <i class="fas fa-search"></i> بحث
               </button>
+              <button class="btn btn-info search-action-btn" id="refreshCarsBtn" type="button" title="إظهار جميع السيارات وإلغاء البحث" aria-label="تحديث قائمة السيارات وإلغاء البحث">
+                <i class="fas fa-rotate"></i> تحديث
+              </button>
             </div>
+            <div class="search-hint" id="searchHint" aria-live="polite"></div>
           </div>
 
           <!-- قائمة السيارات -->
@@ -2450,6 +2512,11 @@
           .addEventListener("keyup", (e) => {
             if (e.key === "Enter") performSearch();
           });
+
+        // زر التحديث: إلغاء البحث وإظهار جميع السيارات من جديد
+        document
+          .getElementById("refreshCarsBtn")
+          .addEventListener("click", refreshCarsList);
 
         // تأكيد الحذف
         document
@@ -3393,6 +3460,35 @@
             `❌ حدث خطأ غير متوقع: ${error.message}`,
             "danger",
           );
+        }
+      }
+
+      // إعادة قائمة السيارات إلى حالتها الأصلية بعد البحث
+      async function refreshCarsList() {
+        const refreshBtn = document.getElementById("refreshCarsBtn");
+        const searchInput = document.getElementById("searchInput");
+        const searchHint = document.getElementById("searchHint");
+
+        if (refreshBtn) {
+          refreshBtn.disabled = true;
+          refreshBtn.classList.add("is-loading");
+        }
+
+        try {
+          if (searchInput) searchInput.value = "";
+          await loadCars();
+          if (searchHint) {
+            searchHint.textContent = "تم تحديث القائمة وإظهار جميع السيارات";
+            searchHint.classList.add("show");
+            setTimeout(() => searchHint.classList.remove("show"), 2500);
+          }
+        } catch (error) {
+          console.error("خطأ في تحديث قائمة السيارات:", error);
+        } finally {
+          if (refreshBtn) {
+            refreshBtn.disabled = false;
+            refreshBtn.classList.remove("is-loading");
+          }
         }
       }
 
