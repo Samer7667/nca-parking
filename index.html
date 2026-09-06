@@ -825,9 +825,431 @@
     font-size: 1rem;
   }
 } */
+
+      /* =========================================
+         القائمة الجانبية الاحترافية
+         ========================================= */
+      .site-menu-toggle {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        width: 52px;
+        height: 52px;
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 16px;
+        background: rgba(255,255,255,.16);
+        color: #fff;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 10px 30px rgba(0,0,0,.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.45rem;
+        cursor: pointer;
+        z-index: 3500;
+        transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+      }
+
+      .site-menu-toggle:hover {
+        transform: translateY(-2px) scale(1.04);
+        background: rgba(255,255,255,.25);
+        box-shadow: 0 14px 34px rgba(0,0,0,.22);
+      }
+
+      .site-menu-toggle:active {
+        transform: scale(.97);
+      }
+
+      .site-menu-toggle i {
+        transition: transform .28s ease;
+      }
+
+      .site-menu-toggle.active i {
+        transform: rotate(90deg);
+      }
+
+      .site-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 18, 40, .46);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        z-index: 3400;
+        transition: opacity .28s ease, visibility .28s ease;
+      }
+
+      .site-menu-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .site-menu-panel {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: min(390px, calc(100vw - 24px));
+        padding: 18px;
+        border-radius: 28px;
+        background: linear-gradient(160deg, rgba(255,255,255,.98), rgba(247,250,255,.96));
+        border: 1px solid rgba(255,255,255,.9);
+        box-shadow: 0 28px 70px rgba(8, 25, 55, .25);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        transform: translateX(115%);
+        opacity: .6;
+        visibility: hidden;
+        z-index: 3600;
+        display: flex;
+        flex-direction: column;
+        transition: transform .38s cubic-bezier(.2,.85,.2,1), opacity .3s ease, visibility .38s ease;
+        overflow: hidden;
+      }
+
+      [data-theme="dark"] .site-menu-panel {
+        background: linear-gradient(160deg, rgba(29, 33, 41, .98), rgba(18, 21, 28, .97));
+        border-color: rgba(255,255,255,.08);
+        box-shadow: 0 28px 70px rgba(0,0,0,.48);
+      }
+
+      .site-menu-panel.active {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .site-menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 4px 16px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .site-menu-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .site-menu-brand-badge {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-light));
+        color: white;
+        box-shadow: 0 10px 24px rgba(26,58,143,.22);
+      }
+
+      .site-menu-brand-badge i {
+        font-size: 1.25rem;
+      }
+
+      .site-menu-brand h3 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1.05rem;
+        font-weight: 800;
+      }
+
+      .site-menu-brand span {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-secondary);
+        font-size: .78rem;
+      }
+
+      .site-menu-close {
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--border-color);
+        border-radius: 13px;
+        background: var(--hover-bg);
+        color: var(--text-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.05rem;
+        transition: all .2s ease;
+      }
+
+      .site-menu-close:hover {
+        transform: rotate(6deg) scale(1.04);
+      }
+
+      .site-menu-logos {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 0 12px;
+      }
+
+      .site-menu-logo {
+        width: 88px;
+        height: 70px;
+        object-fit: contain;
+        border-radius: 16px;
+        background: rgba(255,255,255,.7);
+        border: 1px solid var(--border-color);
+        padding: 7px;
+        box-shadow: 0 8px 22px rgba(0,0,0,.07);
+      }
+
+      [data-theme="dark"] .site-menu-logo {
+        background: rgba(255,255,255,.06);
+      }
+
+      .site-menu-links {
+        display: grid;
+        gap: 10px;
+        padding: 10px 0;
+      }
+
+      .site-menu-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 14px 15px;
+        border-radius: 17px;
+        border: 1px solid transparent;
+        background: var(--hover-bg);
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+      }
+
+      .site-menu-link:hover {
+        transform: translateX(-4px);
+        border-color: rgba(42,86,198,.18);
+        box-shadow: 0 8px 20px rgba(20,45,90,.08);
+        background: rgba(42,86,198,.08);
+      }
+
+      .site-menu-link .menu-icon {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+        border-radius: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-light));
+        box-shadow: 0 8px 18px rgba(26,58,143,.18);
+      }
+
+      .site-menu-link-text {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .site-menu-link-text strong {
+        display: block;
+        font-size: .95rem;
+      }
+
+      .site-menu-link-text small {
+        display: block;
+        margin-top: 2px;
+        color: var(--text-secondary);
+        font-size: .76rem;
+        font-weight: 500;
+      }
+
+      .site-menu-footer {
+        margin-top: auto;
+        padding-top: 14px;
+      }
+
+      .site-menu-security {
+        padding: 15px 16px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(40,167,69,.10), rgba(23,162,184,.08));
+        border: 1px solid rgba(40,167,69,.18);
+        color: var(--text-primary);
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+      }
+
+      .site-menu-security i {
+        color: var(--accent-green);
+        font-size: 1.05rem;
+        margin-top: 2px;
+      }
+
+      .site-menu-security strong {
+        display: block;
+        font-size: .88rem;
+      }
+
+      .site-menu-security span {
+        display: block;
+        margin-top: 4px;
+        color: var(--text-secondary);
+        font-size: .74rem;
+        line-height: 1.65;
+      }
+
+      .site-menu-copy {
+        text-align: center;
+        margin-top: 12px;
+        color: var(--text-secondary);
+        font-size: .72rem;
+        line-height: 1.7;
+      }
+
+      body.menu-open {
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        .site-menu-toggle {
+          top: 14px;
+          right: 14px;
+          width: 50px;
+          height: 50px;
+        }
+
+        .site-menu-panel {
+          top: 8px;
+          right: 8px;
+          bottom: 8px;
+          width: min(390px, calc(100vw - 16px));
+          border-radius: 24px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .site-menu-panel {
+          padding: 14px;
+        }
+
+        .site-menu-logo {
+          width: 76px;
+          height: 62px;
+        }
+
+        .site-menu-link {
+          padding: 12px 13px;
+        }
+      }
+
     </style>
   </head>
   <body>
+
+    <!-- القائمة الجانبية الاحترافية -->
+    <button
+      class="site-menu-toggle"
+      id="siteMenuToggle"
+      type="button"
+      aria-label="فتح القائمة"
+      aria-expanded="false"
+      title="القائمة"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="site-menu-backdrop" id="siteMenuBackdrop"></div>
+
+    <aside class="site-menu-panel" id="siteMenuPanel" aria-hidden="true">
+      <div class="site-menu-top">
+        <div class="site-menu-brand">
+          <div class="site-menu-brand-badge">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <div>
+            <h3>القائمة الرئيسية</h3>
+            <span>مواقف سيارات الأكاديمية الوطنية للبناء</span>
+          </div>
+        </div>
+
+        <button
+          class="site-menu-close"
+          id="siteMenuClose"
+          type="button"
+          aria-label="إغلاق القائمة"
+          title="إغلاق"
+        >
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="site-menu-logos">
+        <img
+          src="logo.png"
+          alt="شعار المبرمج"
+          class="site-menu-logo"
+          onerror="this.style.display='none'"
+        />
+        <img
+          src="logo-NCA-2.png"
+          alt="شعار الأكاديمية الوطنية للبناء"
+          class="site-menu-logo"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <nav class="site-menu-links" aria-label="روابط الموقع">
+        <a class="site-menu-link" href="index.html" data-menu-action="home">
+          <span class="menu-icon"><i class="fas fa-house"></i></span>
+          <span class="site-menu-link-text">
+            <strong>الرئيسية</strong>
+            <small>العودة إلى قائمة السيارات</small>
+          </span>
+          <i class="fas fa-chevron-left" style="opacity:.45"></i>
+        </a>
+
+        <a class="site-menu-link" href="privacy.html">
+          <span class="menu-icon"><i class="fas fa-shield-halved"></i></span>
+          <span class="site-menu-link-text">
+            <strong>سياسة الخصوصية</strong>
+            <small>كيف يتم التعامل مع بيانات المستخدمين</small>
+          </span>
+          <i class="fas fa-chevron-left" style="opacity:.45"></i>
+        </a>
+
+        <a class="site-menu-link" href="terms.html">
+          <span class="menu-icon"><i class="fas fa-file-contract"></i></span>
+          <span class="site-menu-link-text">
+            <strong>حقوق الملكية وشروط الاستخدام</strong>
+            <small>الحقوق والضوابط الخاصة باستخدام النظام</small>
+          </span>
+          <i class="fas fa-chevron-left" style="opacity:.45"></i>
+        </a>
+      </nav>
+
+      <div class="site-menu-footer">
+        <div class="site-menu-security">
+          <i class="fas fa-circle-check"></i>
+          <div>
+            <strong>كل شيء محفوظ ومحمي</strong>
+            <span>حقوق التصميم والبرمجة والمحتوى محفوظة، وتُعرض هذه الصفحات لتوضيح الخصوصية وشروط استخدام النظام.</span>
+          </div>
+        </div>
+
+        <div class="site-menu-copy">
+          © 2026 جميع الحقوق محفوظة | نظام مواقف سيارات الأكاديمية الوطنية للبناء
+        </div>
+      </div>
+    </aside>
+
     <!-- شاشة الصيانة
 <div class="maintenance-overlay">
 
@@ -1394,6 +1816,53 @@
       let currentPage = "home";
       let isDarkMode = false;
 
+
+      // القائمة الجانبية الاحترافية
+      function setupSiteMenu() {
+        const toggle = document.getElementById("siteMenuToggle");
+        const close = document.getElementById("siteMenuClose");
+        const panel = document.getElementById("siteMenuPanel");
+        const backdrop = document.getElementById("siteMenuBackdrop");
+
+        if (!toggle || !close || !panel || !backdrop) return;
+
+        function openMenu() {
+          toggle.classList.add("active");
+          toggle.setAttribute("aria-expanded", "true");
+          panel.classList.add("active");
+          panel.setAttribute("aria-hidden", "false");
+          backdrop.classList.add("active");
+          document.body.classList.add("menu-open");
+        }
+
+        function closeMenu() {
+          toggle.classList.remove("active");
+          toggle.setAttribute("aria-expanded", "false");
+          panel.classList.remove("active");
+          panel.setAttribute("aria-hidden", "true");
+          backdrop.classList.remove("active");
+          document.body.classList.remove("menu-open");
+        }
+
+        toggle.addEventListener("click", () => {
+          if (panel.classList.contains("active")) closeMenu();
+          else openMenu();
+        });
+
+        close.addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", closeMenu);
+
+        panel.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            closeMenu();
+          });
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeMenu();
+        });
+      }
+
       // تهيئة التطبيق
       document.addEventListener("DOMContentLoaded", async function () {
         console.log("بدء تشغيل نظام مواقف السيارات");
@@ -1403,6 +1872,8 @@
 
         // تهيئة معرف الجهاز
         initializeDeviceId();
+
+        setupSiteMenu();
 
         // إعداد المستمعين للأحداث
         setupEventListeners();
