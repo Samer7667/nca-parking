@@ -1150,23 +1150,379 @@
         }
       }
 
+
+      /* =========================================
+         تحسين شامل للواجهة والوضعين الفاتح والليلي
+         ========================================= */
+      :root {
+        --bg-primary: #f3f7fb;
+        --bg-secondary: #ffffff;
+        --bg-elevated: rgba(255,255,255,.92);
+        --text-primary: #172033;
+        --text-secondary: #64748b;
+        --text-muted: #8b98aa;
+        --accent-blue: #123f8f;
+        --accent-blue-light: #2c67d8;
+        --accent-green: #16a05d;
+        --accent-red: #d9364f;
+        --accent-yellow: #f2b705;
+        --accent-info: #168ca5;
+        --border-color: #dbe3ee;
+        --input-bg: #ffffff;
+        --hover-bg: #f4f7fb;
+        --header-shadow: 0 10px 34px rgba(16,42,82,.12);
+        --card-shadow: 0 12px 35px rgba(18,52,96,.09);
+        --focus-ring: 0 0 0 4px rgba(44,103,216,.15);
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #0b1220;
+        --bg-secondary: #121b2b;
+        --bg-elevated: rgba(18,27,43,.94);
+        --text-primary: #f4f7fb;
+        --text-secondary: #aab6c7;
+        --text-muted: #7f8ca0;
+        --accent-blue: #79a6ff;
+        --accent-blue-light: #3e76e5;
+        --accent-green: #45cf8a;
+        --accent-red: #ff6b7c;
+        --accent-yellow: #ffd45a;
+        --accent-info: #59c4da;
+        --border-color: #27344a;
+        --input-bg: #0f1726;
+        --hover-bg: #182337;
+        --header-shadow: 0 16px 45px rgba(0,0,0,.34);
+        --card-shadow: 0 18px 48px rgba(0,0,0,.28);
+        --focus-ring: 0 0 0 4px rgba(121,166,255,.16);
+      }
+
+      html {
+        color-scheme: light;
+      }
+
+      html[data-theme="dark"] {
+        color-scheme: dark;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 12% 0%, rgba(44,103,216,.10), transparent 28%),
+          radial-gradient(circle at 88% 100%, rgba(22,160,93,.07), transparent 24%),
+          var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color .35s ease, color .35s ease;
+      }
+
+      header {
+        box-shadow: var(--header-shadow);
+      }
+
+      .header-content {
+        position: relative;
+        min-height: 50px;
+        padding-inline: 86px 24px;
+        justify-content: center !important;
+      }
+
+      .logo {
+        min-width: 0;
+        text-align: center;
+      }
+
+      .logo > i {
+        flex: 0 0 auto;
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,.16));
+      }
+
+      .logo h1 {
+        font-size: clamp(1rem, 2vw, 1.48rem);
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .logo span {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .btn,
+      .theme-toggle-btn,
+      .site-menu-toggle,
+      .site-menu-close,
+      .site-menu-link {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .btn:focus-visible,
+      .theme-toggle-btn:focus-visible,
+      .site-menu-toggle:focus-visible,
+      .site-menu-close:focus-visible,
+      .site-menu-link:focus-visible,
+      .form-control:focus-visible {
+        outline: none;
+        box-shadow: var(--focus-ring);
+      }
+
+      .btn {
+        min-height: 44px;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(18,52,96,.08);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .form-control,
+      input,
+      select,
+      textarea {
+        transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, color .2s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--accent-blue-light);
+        box-shadow: var(--focus-ring);
+      }
+
+      .cars-grid {
+        align-items: stretch;
+      }
+
+      .car-card {
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+
+      .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 45px rgba(18,52,96,.15);
+      }
+
+      [data-theme="dark"] .car-card:hover {
+        box-shadow: 0 20px 45px rgba(0,0,0,.35);
+      }
+
+      .modal {
+        background: rgba(2,9,20,.62);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        border: 1px solid var(--border-color);
+        box-shadow: 0 28px 80px rgba(0,0,0,.22);
+        color: var(--text-primary);
+      }
+
+      .alert {
+        border: 1px solid var(--border-color);
+      }
+
+      [data-theme="dark"] .alert-info {
+        background: #132938;
+        color: #bfe8f0;
+        border-color: #234958;
+      }
+
+      [data-theme="dark"] .alert-warning {
+        background: #332d16;
+        color: #ffe89b;
+        border-color: #574c21;
+      }
+
+      [data-theme="dark"] .alert-danger {
+        background: #351b22;
+        color: #ffc1ca;
+        border-color: #5d2834;
+      }
+
+      [data-theme="dark"] footer {
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+      }
+
+      .theme-toggle-btn {
+        border: 1px solid rgba(255,255,255,.15);
+        box-shadow: 0 14px 32px rgba(0,0,0,.18);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .theme-toggle-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+      }
+
+      /* زر القائمة: داخل مساحة الهيدر حتى لا يغطي العنوان */
+      .site-menu-toggle {
+        position: absolute;
+        top: 50%;
+        right: 18px;
+        transform: translateY(-50%);
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        z-index: 3600;
+      }
+
+      .site-menu-toggle:hover {
+        transform: translateY(-50%) scale(1.04);
+      }
+
+      .site-menu-toggle:active {
+        transform: translateY(-50%) scale(.97);
+      }
+
+      /* حماية إضافية للشاشات الصغيرة جدًا */
+      @media (max-width: 768px) {
+        .header-content {
+          min-height: 78px;
+          padding-inline: 76px 14px;
+        }
+
+        .logo {
+          width: 100%;
+          gap: 10px;
+        }
+
+        .logo h1 {
+          white-space: normal;
+          font-size: 1.05rem;
+        }
+
+        .logo span {
+          font-size: .76rem !important;
+        }
+
+        .logo i {
+          font-size: 1.55rem;
+        }
+
+        .site-menu-toggle {
+          right: 12px;
+          width: 48px;
+          height: 48px;
+          border-radius: 15px;
+        }
+
+        .site-menu-panel {
+          width: min(420px, calc(100vw - 16px));
+        }
+
+        body {
+          padding-top: 118px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-content {
+          min-height: 72px;
+          padding-inline: 68px 10px;
+        }
+
+        .logo {
+          gap: 8px;
+        }
+
+        .logo h1 {
+          font-size: .96rem;
+        }
+
+        .logo span {
+          font-size: .68rem !important;
+        }
+
+        .logo i {
+          font-size: 1.35rem;
+        }
+
+        .site-menu-toggle {
+          right: 9px;
+          width: 45px;
+          height: 45px;
+          border-radius: 14px;
+          font-size: 1.2rem;
+        }
+
+        .theme-toggle-btn {
+          width: 46px;
+          height: 46px;
+          right: 12px;
+          bottom: 12px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: .01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: .01ms !important;
+        }
+      }
+
+
+      /* ===== نهائي: تثبيت مكان زر القائمة في الهيدر ومنع تداخله مع العنوان ===== */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+
+      .header-content {
+        position: relative;
+        padding-inline: 88px 20px !important;
+        justify-content: center !important;
+      }
+
+      .site-menu-toggle {
+        top: 50% !important;
+        right: 18px !important;
+        transform: translateY(-50%) !important;
+        z-index: 3600 !important;
+      }
+
+      .site-menu-toggle:hover {
+        transform: translateY(-50%) scale(1.04) !important;
+      }
+
+      .site-menu-toggle:active {
+        transform: translateY(-50%) scale(.97) !important;
+      }
+
+      @media (max-width: 768px) {
+        .header-content {
+          min-height: 78px;
+          padding-inline: 76px 12px !important;
+        }
+
+        .site-menu-toggle {
+          right: 12px !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-content {
+          min-height: 72px;
+          padding-inline: 68px 8px !important;
+        }
+
+        .site-menu-toggle {
+          right: 8px !important;
+        }
+      }
+
     </style>
   </head>
   <body>
-
-    <!-- القائمة الجانبية الاحترافية -->
-    <button
-      class="site-menu-toggle"
-      id="siteMenuToggle"
-      type="button"
-      aria-label="فتح القائمة"
-      aria-expanded="false"
-      title="القائمة"
-    >
-      <i class="fas fa-bars"></i>
-    </button>
-
-    <div class="site-menu-backdrop" id="siteMenuBackdrop"></div>
+    <div class="site-menu-backdrop" id="siteMenuBackdrop"></div> id="siteMenuBackdrop"></div>
 
     <aside class="site-menu-panel" id="siteMenuPanel" aria-hidden="true">
       <div class="site-menu-top">
@@ -1207,11 +1563,11 @@
       </div>
 
       <nav class="site-menu-links" aria-label="روابط الموقع">
-        <a class="site-menu-link" href="index.html" data-menu-action="home">
+        <a class="site-menu-link" href="https://www.nca-parking.com/" data-menu-action="home">
           <span class="menu-icon"><i class="fas fa-house"></i></span>
           <span class="site-menu-link-text">
             <strong>الرئيسية</strong>
-            <small>العودة إلى قائمة السيارات</small>
+            <small>الوصول السريع إلى الموقع الرسمي</small>
           </span>
           <i class="fas fa-chevron-left" style="opacity:.45"></i>
         </a>
@@ -1220,7 +1576,7 @@
           <span class="menu-icon"><i class="fas fa-shield-halved"></i></span>
           <span class="site-menu-link-text">
             <strong>سياسة الخصوصية</strong>
-            <small>كيف يتم التعامل مع بيانات المستخدمين</small>
+            <small>معرفة كيفية التعامل مع بيانات المستخدمين</small>
           </span>
           <i class="fas fa-chevron-left" style="opacity:.45"></i>
         </a>
@@ -1229,7 +1585,7 @@
           <span class="menu-icon"><i class="fas fa-file-contract"></i></span>
           <span class="site-menu-link-text">
             <strong>حقوق الملكية وشروط الاستخدام</strong>
-            <small>الحقوق والضوابط الخاصة باستخدام النظام</small>
+            <small>الحقوق وشروط استخدام النظام</small>
           </span>
           <i class="fas fa-chevron-left" style="opacity:.45"></i>
         </a>
@@ -1302,7 +1658,9 @@
     <button
       class="theme-toggle-btn"
       id="themeToggleBtn"
-      title="تبديل الوضع الليلي/الفاتح"
+      type="button"
+      aria-label="تفعيل الوضع الليلي"
+      title="تفعيل الوضع الليلي"
     >
       <i class="fas fa-moon"></i>
     </button>
@@ -1310,6 +1668,16 @@
     <!-- الترويسة -->
     <header id="mainHeader">
       <div class="container header-content">
+<button
+      class="site-menu-toggle"
+      id="siteMenuToggle"
+      type="button"
+      aria-label="فتح القائمة"
+      aria-expanded="false"
+      title="القائمة"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
         <div class="logo">
           <i class="fas fa-car"></i>
           <div>
@@ -1891,7 +2259,8 @@
       // تحميل إعدادات الوضع الليلي من التخزين المحلي
       function loadThemeSettings() {
         const savedTheme = localStorage.getItem("parking_theme");
-        if (savedTheme === "dark") {
+
+        if (savedTheme === "dark" || (!savedTheme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
           isDarkMode = true;
           document.documentElement.setAttribute("data-theme", "dark");
         } else {
@@ -1899,7 +2268,6 @@
           document.documentElement.setAttribute("data-theme", "light");
         }
 
-        // تحديث واجهة المستخدم
         updateThemeUI();
       }
 
@@ -1928,8 +2296,12 @@
 
         if (isDarkMode) {
           themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+          themeBtn.setAttribute("aria-label", "تفعيل الوضع الفاتح");
+          themeBtn.setAttribute("title", "التحويل إلى الوضع الفاتح");
         } else {
           themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+          themeBtn.setAttribute("aria-label", "تفعيل الوضع الليلي");
+          themeBtn.setAttribute("title", "التحويل إلى الوضع الليلي");
         }
 
         // تحديث لون العنوان في الصفحة الرئيسية
