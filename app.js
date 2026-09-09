@@ -1,7 +1,9 @@
 // زر النزول السريع لأسفل الصفحة
       function setupScrollBottomButton() {
-        const btn = document.getElementById("scrollToBottomBtn");
-        if (!btn) return;
+        const downBtn = document.getElementById("scrollToBottomBtn");
+        const upBtn = document.getElementById("scrollToTopBtn");
+
+        if (!downBtn && !upBtn) return;
 
         const updateVisibility = () => {
           const pageHeight = Math.max(
@@ -9,31 +11,86 @@
             document.documentElement.scrollHeight
           );
 
+          const scrollTop =
+            window.scrollY ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+          const nearTop = scrollTop < 320;
+
           const nearBottom =
-            window.innerHeight + window.scrollY >= pageHeight - 180;
+            window.innerHeight + scrollTop >= pageHeight - 180;
 
-          const modalOpen = document.body.classList.contains("modal-open");
+          const modalOpen =
+            document.body.classList.contains("modal-open");
 
-          btn.classList.toggle("hidden", nearBottom || modalOpen);
+          // سهم النزول:
+          // يظهر ما دام المستخدم ليس قرب نهاية الصفحة.
+          if (downBtn) {
+            downBtn.classList.toggle(
+              "hidden",
+              nearBottom || modalOpen
+            );
+          }
+
+          // سهم الصعود:
+          // لا يظهر في أعلى الصفحة، ويظهر بعد النزول.
+          if (upBtn) {
+            upBtn.classList.toggle(
+              "hidden",
+              nearTop || modalOpen
+            );
+          }
         };
 
-        btn.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
+        if (downBtn) {
+          downBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-          const pageHeight = Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight
-          );
+            const pageHeight = Math.max(
+              document.body.scrollHeight,
+              document.documentElement.scrollHeight
+            );
 
-          window.scrollTo({
-            top: pageHeight,
-            behavior: "smooth"
+            window.scrollTo({
+              top: pageHeight,
+              behavior: "smooth"
+            });
           });
-        });
+        }
 
-        window.addEventListener("scroll", updateVisibility, { passive: true });
-        window.addEventListener("resize", updateVisibility);
+        if (upBtn) {
+          upBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          });
+        }
+
+        window.addEventListener(
+          "scroll",
+          updateVisibility,
+          { passive: true }
+        );
+
+        window.addEventListener(
+          "resize",
+          updateVisibility
+        );
+
+        // بعد تغيير الصفحة بين الرئيسية و"سياراتي"
+        // نعيد حساب مكان الأزرار.
+        document.addEventListener(
+          "nca-page-changed",
+          updateVisibility
+        );
+
         updateVisibility();
       }
 
@@ -781,8 +838,24 @@ async function updateHeaderCarCounter() {
                         </div>
                         
                         <div class="car-actions">
-                            <button class="btn btn-primary" onclick="contactOwner('${safePhoneNumber}', '${safeOwnerName}')">
+                            <button
+                                class="btn btn-primary contact-action-btn"
+                                type="button"
+                                onclick="contactOwner('${safePhoneNumber}', '${safeOwnerName}')"
+                                aria-label="الاتصال بصاحب السيارة ${safeOwnerName}"
+                                title="اتصال هاتفي"
+                            >
                                 <i class="fas fa-phone-alt"></i> اتصل
+                            </button>
+
+                            <button
+                                class="btn btn-whatsapp contact-action-btn"
+                                type="button"
+                                onclick="whatsappOwner('${safePhoneNumber}', '${safeOwnerName}', '${safePlateNumber}')"
+                                aria-label="التواصل مع صاحب السيارة ${safeOwnerName} عبر واتساب"
+                                title="مراسلة عبر واتساب"
+                            >
+                                <i class="fab fa-whatsapp"></i> واتساب
                             </button>
 ${
                               canEdit
@@ -892,6 +965,7 @@ ${
           container.innerHTML = data.map((car) => {
             const safeOwnerName = String(car.owner_name || "").replace(/'/g, "\\'");
             const safePlateNumber = String(car.plate_number || "").replace(/'/g, "\\'");
+            const safePhoneNumber = String(car.phone_number || "").replace(/'/g, "\\'");
 
             return `
               <div class="car-card">
@@ -941,6 +1015,24 @@ ${
                   </div>
 
                   <div class="car-actions">
+                    <button
+                      class="btn btn-primary contact-action-btn"
+                      type="button"
+                      onclick="contactOwner('${safePhoneNumber}', '${safeOwnerName}')"
+                      title="اتصال هاتفي"
+                    >
+                      <i class="fas fa-phone-alt"></i> اتصل
+                    </button>
+
+                    <button
+                      class="btn btn-whatsapp contact-action-btn"
+                      type="button"
+                      onclick="whatsappOwner('${safePhoneNumber}', '${safeOwnerName}', '${safePlateNumber}')"
+                      title="مراسلة عبر واتساب"
+                    >
+                      <i class="fab fa-whatsapp"></i> واتساب
+                    </button>
+
                     <button class="btn btn-warning" onclick="editCar('${car.id}')">
                       <i class="fas fa-edit"></i> تعديل
                     </button>
@@ -1410,10 +1502,92 @@ ${
         }
       }
 
-      // التواصل مع المالك عبر الاتصال
+      // =========================================================
+      // التواصل مع صاحب السيارة: اتصال + واتساب
+      // =========================================================
+
+      function normalizeArabicPhoneDigits(value) {
+        const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
+        const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+
+        return String(value || "")
+          .replace(/[٠-٩]/g, (digit) => String(arabicDigits.indexOf(digit)))
+          .replace(/[۰-۹]/g, (digit) => String(persianDigits.indexOf(digit)));
+      }
+
+      function normalizeSaudiPhone(phoneNumber) {
+        let digits = normalizeArabicPhoneDigits(phoneNumber).replace(/\D/g, "");
+
+        // 009665xxxxxxxx
+        if (digits.startsWith("00966")) {
+          digits = digits.slice(2);
+        }
+
+        // 05xxxxxxxx -> 9665xxxxxxxx
+        if (digits.startsWith("05") && digits.length === 10) {
+          return "966" + digits.slice(1);
+        }
+
+        // 5xxxxxxxx -> 9665xxxxxxxx
+        if (digits.startsWith("5") && digits.length === 9) {
+          return "966" + digits;
+        }
+
+        // 9665xxxxxxxx
+        if (digits.startsWith("966")) {
+          return digits;
+        }
+
+        // في حال كان الرقم بصيغة أخرى، نعيد الأرقام فقط.
+        return digits;
+      }
+
       function contactOwner(phoneNumber, ownerName) {
-        if (confirm(`الاتصال بـ ${ownerName} على الرقم ${phoneNumber}؟`)) {
-          window.location.href = `tel:${phoneNumber}`;
+        const normalizedPhone = normalizeSaudiPhone(phoneNumber);
+
+        if (!normalizedPhone) {
+          alert("تعذر العثور على رقم هاتف صالح لهذا المسجل.");
+          return;
+        }
+
+        const displayName = String(ownerName || "صاحب السيارة").trim();
+
+        if (
+          confirm(
+            `هل تريد الاتصال بـ ${displayName}؟\nالرقم: +${normalizedPhone}`
+          )
+        ) {
+          window.location.href = `tel:+${normalizedPhone}`;
+        }
+      }
+
+      function whatsappOwner(phoneNumber, ownerName, plateNumber = "") {
+        const normalizedPhone = normalizeSaudiPhone(phoneNumber);
+
+        if (!normalizedPhone) {
+          alert("تعذر فتح واتساب لأن رقم الهاتف غير صالح.");
+          return;
+        }
+
+        const displayName = String(ownerName || "صاحب السيارة").trim();
+        const plate = String(plateNumber || "").trim();
+
+        const message = plate
+          ? `السلام عليكم ${displayName}، أتواصل معك بخصوص سيارتك المسجلة في نظام مواقف سيارات الأكاديمية، رقم اللوحة: ${plate}.`
+          : `السلام عليكم ${displayName}، أتواصل معك بخصوص سيارتك المسجلة في نظام مواقف سيارات الأكاديمية.`;
+
+        const whatsappUrl =
+          `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+
+        const openedWindow = window.open(
+          whatsappUrl,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+        // بعض متصفحات الجوال قد تمنع النافذة الجديدة؛ نستخدم الانتقال المباشر كبديل.
+        if (!openedWindow) {
+          window.location.href = whatsappUrl;
         }
       }
 
@@ -1439,6 +1613,10 @@ ${
         }
 
         window.scrollTo({ top: 0, behavior: "smooth" });
+
+        setTimeout(() => {
+          document.dispatchEvent(new Event("nca-page-changed"));
+        }, 350);
       }
 
       function showModal(modalId) {
