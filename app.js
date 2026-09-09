@@ -1,4 +1,4 @@
-// NCA Parking JS build: 20260909-06
+// NCA Parking JS build: 20260909-07
 
 // زر النزول السريع لأسفل الصفحة
       function setupScrollBottomButton() {
@@ -103,9 +103,30 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxZGJraXZ5eXB0anJ5dmZkeWRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDY0NjEsImV4cCI6MjA4NjI4MjQ2MX0.v0DwW0wcgqmpalOyLxi3sz_uJ7OQtUGNoOwPzU6zN7w";
 
       // إنشاء عميل Supabase
+      // يرسل معرف الجهاز المخزن محليًا مع كل طلب إلى Supabase
+      // حتى تستطيع سياسات RLS التحقق من ملكية السيارة عند التعديل أو التعطيل.
       const supabaseClient = window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY,
+        {
+          global: {
+            fetch: async (url, options = {}) => {
+              const headers = new Headers(options.headers || {});
+
+              const currentDeviceId =
+                localStorage.getItem("parking_device_id");
+
+              if (currentDeviceId) {
+                headers.set("x-device-id", currentDeviceId);
+              }
+
+              return fetch(url, {
+                ...options,
+                headers,
+              });
+            },
+          },
+        },
       );
 
 
