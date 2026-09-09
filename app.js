@@ -1,18 +1,35 @@
 // زر النزول السريع لأسفل الصفحة
       function setupScrollBottomButton() {
         const btn = document.getElementById("scrollToBottomBtn");
-        const footer = document.getElementById("siteFooter");
-        if (!btn || !footer) return;
+        if (!btn) return;
 
         const updateVisibility = () => {
+          const pageHeight = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight
+          );
+
           const nearBottom =
-            window.innerHeight + window.scrollY >=
-            document.documentElement.scrollHeight - 260;
-          btn.classList.toggle("hidden", nearBottom);
+            window.innerHeight + window.scrollY >= pageHeight - 180;
+
+          const modalOpen = document.body.classList.contains("modal-open");
+
+          btn.classList.toggle("hidden", nearBottom || modalOpen);
         };
 
-        btn.addEventListener("click", () => {
-          footer.scrollIntoView({ behavior: "smooth", block: "start" });
+        btn.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const pageHeight = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight
+          );
+
+          window.scrollTo({
+            top: pageHeight,
+            behavior: "smooth"
+          });
         });
 
         window.addEventListener("scroll", updateVisibility, { passive: true });
@@ -21,8 +38,7 @@
       }
 
 
-
-// استبدل هذه القيم ببيانات مشروعك في Supabase
+      // استبدل هذه القيم ببيانات مشروعك في Supabase
       const SUPABASE_URL = "https://wqdbkivyyptjryvfdydl.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxZGJraXZ5eXB0anJ5dmZkeWRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MDY0NjEsImV4cCI6MjA4NjI4MjQ2MX0.v0DwW0wcgqmpalOyLxi3sz_uJ7OQtUGNoOwPzU6zN7w";
@@ -823,7 +839,25 @@ ${
 
       // عرض سياراتي
       async function showMyCars() {
+        const container = document.getElementById("myCarsContainer");
+
+        // التحويل فورًا إلى صفحة "سياراتي" حتى تختفي جميع سيارات الآخرين
+        showPage("myCarsPage");
+
+        if (!container) return;
+
+        container.innerHTML = `
+          <div class="my-cars-loading" style="grid-column: 1/-1; text-align:center; padding:45px 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:2rem; color:var(--accent-blue);"></i>
+            <h3 style="margin-top:15px; color:var(--text-primary);">جارٍ تحميل سياراتك...</h3>
+          </div>
+        `;
+
         try {
+          if (!deviceId) {
+            initializeDeviceId();
+          }
+
           const { data, error } = await supabaseClient
             .from("cars")
             .select("*")
@@ -833,86 +867,114 @@ ${
 
           if (error) throw error;
 
-          const container = document.getElementById("myCarsContainer");
-
           if (!data || data.length === 0) {
             container.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                            <i class="fas fa-car" style="font-size: 3rem; color: #ccc;"></i>
-                            <h3 style="color: var(--text-secondary);">لا توجد سيارات مسجلة</h3>
-                            <p style="color: var(--text-secondary);">قم بإضافة سيارة جديدة</p>
-                        </div>
-                    `;
-          } else {
-            container.innerHTML = data
-              .map((car) => {
-                const safeOwnerName = car.owner_name.replace(/'/g, "\\'");
-                const safePlateNumber = car.plate_number.replace(/'/g, "\\'");
-
-                return `
-                        <div class="car-card">
-                            <div class="my-car-badge"><i class="fas fa-check-circle"></i> سيارتي</div>
-                            <div class="car-header">
-                                <h3>${car.car_model}</h3>
-                                <p>${car.plate_number}</p>
-                            </div>
-                            <div class="car-body">
-                                ${
-                                  car.car_image
-                                    ? `
-                                <div style="text-align: center; margin-bottom: 15px;">
-                                    <img src="${car.car_image}" 
-                                         style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border-color);"
-                                         alt="صورة سيارة ${car.plate_number}"
-                                         onerror="this.style.display='none'">
-                                </div>
-                                `
-                                    : ""
-                                }
-                                
-                                <div class="car-info">
-                                    <h3><i class="fas fa-user"></i> صاحب السيارة</h3>
-                                    <p>${car.owner_name}</p>
-                                </div>
-                                
-                                <div class="car-info">
-                                    <h3><i class="fas fa-palette"></i> اللون</h3>
-                                    <p>${car.car_color}</p>
-                                </div>
-                                
-                                <div class="car-info">
-                                    <h3><i class="fas fa-phone"></i> رقم الهاتف</h3>
-                                    <p>${car.phone_number}</p>
-                                </div>
-                                
-                                <div class="car-info">
-                                    <h3><i class="fas fa-graduation-cap"></i> مجال التدريب</h3>
-                                    <p>${car.training_field}</p>
-                                </div>
-                                
-                                <div class="car-actions">
-                                    <button class="btn btn-warning" onclick="editCar('${car.id}')">
-                                        <i class="fas fa-edit"></i> تعديل
-                                    </button>
-                                    
-                                    <button class="btn btn-danger" onclick="confirmDeleteCar('${car.id}', '${safePlateNumber}', '${safeOwnerName}')">
-                                        <i class="fas fa-trash"></i> حذف
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-              })
-              .join("");
+              <div style="grid-column:1/-1; text-align:center; padding:45px 20px;">
+                <i class="fas fa-car-side" style="font-size:3rem; color:#aaa; margin-bottom:15px;"></i>
+                <h3 style="color:var(--text-primary);">لا توجد سيارات مسجلة من هذا الجهاز</h3>
+                <p style="color:var(--text-secondary); margin-top:8px;">
+                  السيارات التي تسجلها من هذا الجهاز ستظهر هنا فقط.
+                </p>
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  style="margin-top:18px;"
+                  onclick="addNewCar()"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                  إضافة سيارتي
+                </button>
+              </div>
+            `;
+            return;
           }
 
-          showPage("myCarsPage");
+          container.innerHTML = data.map((car) => {
+            const safeOwnerName = String(car.owner_name || "").replace(/'/g, "\\'");
+            const safePlateNumber = String(car.plate_number || "").replace(/'/g, "\\'");
+
+            return `
+              <div class="car-card">
+                <div class="my-car-badge">
+                  <i class="fas fa-check-circle"></i> سيارتي
+                </div>
+
+                <div class="car-header">
+                  <h3>${car.car_model || ""}</h3>
+                  <p>${car.plate_number || ""}</p>
+                </div>
+
+                <div class="car-body">
+                  ${
+                    car.car_image
+                      ? `
+                        <div style="text-align:center; margin-bottom:15px;">
+                          <img
+                            src="${car.car_image}"
+                            style="max-width:100%; max-height:150px; border-radius:8px; border:1px solid var(--border-color);"
+                            alt="صورة السيارة"
+                            onerror="this.style.display='none'"
+                          />
+                        </div>
+                      `
+                      : ""
+                  }
+
+                  <div class="car-info">
+                    <h3><i class="fas fa-user"></i> صاحب السيارة</h3>
+                    <p>${car.owner_name || ""}</p>
+                  </div>
+
+                  <div class="car-info">
+                    <h3><i class="fas fa-palette"></i> اللون</h3>
+                    <p>${car.car_color || ""}</p>
+                  </div>
+
+                  <div class="car-info">
+                    <h3><i class="fas fa-phone"></i> رقم الهاتف</h3>
+                    <p>${car.phone_number || ""}</p>
+                  </div>
+
+                  <div class="car-info">
+                    <h3><i class="fas fa-graduation-cap"></i> مجال التدريب</h3>
+                    <p>${car.training_field || ""}</p>
+                  </div>
+
+                  <div class="car-actions">
+                    <button class="btn btn-warning" onclick="editCar('${car.id}')">
+                      <i class="fas fa-edit"></i> تعديل
+                    </button>
+
+                    <button
+                      class="btn btn-danger"
+                      onclick="confirmDeleteCar('${car.id}', '${safePlateNumber}', '${safeOwnerName}')"
+                    >
+                      <i class="fas fa-trash"></i> حذف
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("");
+
         } catch (error) {
           console.error("خطأ في تحميل سياراتي:", error);
-          showPage("myCarsPage");
-          showAlert("mainAlert", "تعذر تحميل سياراتك الآن؛ تأكد من اتصال النظام ثم حاول مرة أخرى.", "danger");
+
+          container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:45px 20px;">
+              <i class="fas fa-triangle-exclamation" style="font-size:2.6rem; color:#ffc107;"></i>
+              <h3 style="margin-top:14px; color:var(--text-primary);">تعذر تحميل سياراتك</h3>
+              <p style="color:var(--text-secondary); margin-top:8px;">
+                تحقق من اتصال الإنترنت ثم حاول مرة أخرى.
+              </p>
+              <button type="button" class="btn btn-primary" style="margin-top:16px;" onclick="showMyCars()">
+                <i class="fas fa-rotate"></i> إعادة المحاولة
+              </button>
+            </div>
+          `;
         }
       }
+
 
       // التحقق من جلسة المدير عبر Supabase Auth
       async function initializeAdminAuth() {
@@ -1359,9 +1421,23 @@ ${
       function showPage(pageId) {
         const target = document.getElementById(pageId);
         if (!target) return;
-        document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
+
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.remove("active");
+          page.setAttribute("aria-hidden", "true");
+        });
+
         target.classList.add("active");
+        target.setAttribute("aria-hidden", "false");
+
         currentPage = pageId;
+
+        // تنظيف البحث عند العودة للرئيسية
+        if (pageId === "home") {
+          const searchInput = document.getElementById("searchInput");
+          if (searchInput) searchInput.value = "";
+        }
+
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
@@ -1417,6 +1493,6 @@ ${
       // إغلاق الموديل عند النقر خارجها
       window.addEventListener("click", (e) => {
         if (e.target.classList.contains("modal")) {
-          e.target.classList.remove("active");
+          closeModal(e.target.id);
         }
       });
