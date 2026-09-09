@@ -1579,16 +1579,9 @@ ${
         const whatsappUrl =
           `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
 
-        const openedWindow = window.open(
-          whatsappUrl,
-          "_blank",
-          "noopener,noreferrer"
-        );
-
-        // بعض متصفحات الجوال قد تمنع النافذة الجديدة؛ نستخدم الانتقال المباشر كبديل.
-        if (!openedWindow) {
-          window.location.href = whatsappUrl;
-        }
+        // الانتقال المباشر أكثر اعتمادية على متصفحات الجوال،
+        // ويفتح تطبيق واتساب عند توفره أو WhatsApp Web كبديل.
+        window.location.href = whatsappUrl;
       }
 
       // وظائف المساعدة
