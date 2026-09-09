@@ -1,3 +1,5 @@
+// NCA Parking JS build: 20260909-06
+
 // زر النزول السريع لأسفل الصفحة
       function setupScrollBottomButton() {
         const downBtn = document.getElementById("scrollToBottomBtn");
