@@ -1750,6 +1750,118 @@ body.modal-open {
 
 
 /* =========================================================
+   زر العودة السريعة لأعلى الصفحة
+   - الكمبيوتر: سهم + "للأعلى"
+   - الجوال: سهم فقط
+   - يظهر بعد النزول لمسافة مناسبة
+   ========================================================= */
+.scroll-top-btn {
+  position: fixed !important;
+  right: 22px !important;
+  left: auto !important;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 1200 !important;
+
+  min-width: 116px !important;
+  width: auto !important;
+  height: 46px !important;
+  padding: 0 16px !important;
+
+  border: 1px solid rgba(255,255,255,.24) !important;
+  border-radius: 999px !important;
+
+  background: linear-gradient(
+    135deg,
+    var(--accent-blue),
+    var(--accent-blue-light)
+  ) !important;
+
+  color: #fff !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+
+  cursor: pointer !important;
+  font: inherit !important;
+  font-weight: 800 !important;
+
+  box-shadow:
+    0 12px 28px rgba(10,35,80,.24),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    opacity .22s ease,
+    visibility .22s ease,
+    transform .22s ease,
+    box-shadow .22s ease !important;
+}
+
+.scroll-top-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 16px 34px rgba(10,35,80,.30) !important;
+}
+
+.scroll-top-btn:active {
+  transform: scale(.96) !important;
+}
+
+.scroll-top-btn i {
+  pointer-events: none;
+}
+
+.scroll-top-btn.hidden,
+body.modal-open .scroll-top-btn {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* الجوال:
+   - النزول أسفل اليسار
+   - الصعود أسفل اليمين
+   - كلاهما سهم فقط
+*/
+@media (max-width: 600px) {
+  .scroll-top-btn {
+    right: 14px !important;
+    left: auto !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    height: 48px !important;
+
+    padding: 0 !important;
+    border-radius: 50% !important;
+    gap: 0 !important;
+
+    font-size: 1.05rem !important;
+  }
+
+  .scroll-top-btn .scroll-top-label {
+    display: none !important;
+  }
+
+  .scroll-top-btn:hover,
+  .scroll-top-btn:active {
+    transform: none !important;
+  }
+
+  .scroll-top-btn i {
+    display: inline-block !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* =========================================================
    العنوان + عداد المركبات
    العداد يظهر تحت عنوان الأكاديمية في الجوال والكمبيوتر
    ========================================================= */
@@ -2442,5 +2554,43 @@ body {
   .faq-answer::before {
     right: 12px;
     left: 12px;
+  }
+}
+
+/* =========================================================
+   أزرار التواصل مع أصحاب السيارات
+   ========================================================= */
+
+.contact-action-btn {
+  min-width: 108px;
+  justify-content: center;
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366, #128c7e) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 7px 18px rgba(18, 140, 126, 0.20);
+}
+
+.btn-whatsapp:hover {
+  background: linear-gradient(135deg, #20c85f, #0e7e70) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(18, 140, 126, 0.28);
+}
+
+.btn-whatsapp:active {
+  transform: scale(0.98);
+}
+
+.btn-whatsapp i {
+  font-size: 1.05rem;
+}
+
+@media (max-width: 768px) {
+  .car-actions .contact-action-btn {
+    width: 100%;
+    min-height: 46px;
   }
 }
