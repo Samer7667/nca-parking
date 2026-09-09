@@ -52,7 +52,20 @@
         padding: 0 15px;
       }
 
-      /* الترويسة */
+      
+/* =========================================================
+   التنقل بين صفحات الموقع
+   مهم: لا تظهر الرئيسية وسياراتي في نفس الوقت
+   ========================================================= */
+.page {
+  display: none !important;
+}
+
+.page.active {
+  display: block !important;
+}
+
+/* الترويسة */
       header {
         background: linear-gradient(
           135deg,
@@ -1625,125 +1638,116 @@
       }
 
 
-      /* زر النزول السريع لأسفل الصفحة
-   الكمبيوتر: سهم + كلمة "للأسفل"
-   الجوال: سهم فقط
-   يختفي عند فتح أي نافذة منبثقة
-*/
+      /* =========================================================
+   زر النزول السريع
+   - الكمبيوتر: سهم + "للأسفل"
+   - الجوال: سهم فقط
+   - يختفي عند فتح أي نافذة منبثقة
+   ========================================================= */
 .scroll-bottom-btn {
-  position: fixed;
-  left: 50%;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  z-index: 1200;
-  min-width: 118px;
-  height: 46px;
-  padding: 0 16px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-light));
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 800;
-  box-shadow: 0 12px 28px rgba(10, 35, 80, 0.22);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+  transform: translateX(-50%) !important;
+  z-index: 1200 !important;
+
+  min-width: 116px !important;
+  width: auto !important;
+  height: 46px !important;
+  padding: 0 16px !important;
+
+  border: 1px solid rgba(255,255,255,.24) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(
+    135deg,
+    var(--accent-blue),
+    var(--accent-blue-light)
+  ) !important;
+  color: #fff !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+
+  cursor: pointer !important;
+  font: inherit !important;
+  font-weight: 800 !important;
+
+  box-shadow:
+    0 12px 28px rgba(10,35,80,.24),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+
   transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    opacity .22s ease,
+    visibility .22s ease,
+    transform .22s ease,
+    box-shadow .22s ease !important;
 }
 
 .scroll-bottom-btn:hover {
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 16px 34px rgba(10, 35, 80, 0.28);
+  transform: translateX(-50%) translateY(-2px) !important;
+  box-shadow: 0 16px 34px rgba(10,35,80,.30) !important;
 }
 
 .scroll-bottom-btn:active {
-  transform: translateX(-50%) scale(0.97);
+  transform: translateX(-50%) scale(.96) !important;
 }
 
 .scroll-bottom-btn i {
-  transition: transform 0.25s ease;
-}
-
-.scroll-bottom-btn:hover i {
-  transform: translateY(3px);
+  pointer-events: none;
 }
 
 .scroll-bottom-btn.hidden,
 body.modal-open .scroll-bottom-btn {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-.scroll-bottom-btn.hidden {
-  transform: translateX(-50%) translateY(10px);
-}
-
-/* منع تمرير الصفحة الخلفية أثناء فتح النموذج */
+/* منع تمرير الخلفية أثناء فتح النموذج */
 body.modal-open {
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
-/* مساحة آمنة أسفل النموذج على الهاتف */
-.modal-content {
-  padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
-}
-
+/* الجوال: سهم دائري فقط */
 @media (max-width: 600px) {
   .scroll-bottom-btn {
-    left: 14px;
-    right: auto;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-    width: 48px;
-    min-width: 48px;
-    height: 48px;
-    padding: 0;
-    border-radius: 50%;
-    transform: none;
-    font-size: 1.05rem;
+    left: 14px !important;
+    right: auto !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    height: 48px !important;
+
+    padding: 0 !important;
+    border-radius: 50% !important;
+    gap: 0 !important;
+
+    transform: none !important;
+    font-size: 1.05rem !important;
   }
 
   .scroll-bottom-btn .scroll-bottom-label {
-    display: none;
+    display: none !important;
   }
 
   .scroll-bottom-btn:hover,
-  .scroll-bottom-btn:active,
-  .scroll-bottom-btn.hidden {
-    transform: none;
-  }
-
-  .scroll-bottom-btn i {
-    margin: 0;
+  .scroll-bottom-btn:active {
     transform: none !important;
   }
 
-  .modal {
-    padding:
-      max(10px, env(safe-area-inset-top, 0px))
-      8px
-      max(10px, env(safe-area-inset-bottom, 0px));
-  }
-
-  .modal-content {
-    width: 96%;
-    max-height: calc(
-      100dvh -
-      max(20px, env(safe-area-inset-top, 0px)) -
-      max(20px, env(safe-area-inset-bottom, 0px))
-    );
-    padding: 22px 16px calc(22px + env(safe-area-inset-bottom, 0px));
+  .scroll-bottom-btn i {
+    display: inline-block !important;
+    margin: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
   }
 }
+
 
 /* =========================================================
    العنوان + عداد المركبات
