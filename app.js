@@ -20,27 +20,6 @@
         updateVisibility();
       }
 
-// =========================================================
-// خدمة العملاء عبر واتساب - الإصلاح المطلوب
-// =========================================================
-
-const CUSTOMER_SUPPORT_PHONE = "966535620007";
-
-function openCustomerSupportWhatsApp(context = "") {
-  const message = context
-    ? `مرحبًا، أحتاج إلى مساعدة بخصوص نظام مواقف سيارات الأكاديمية الوطنية للبناء.\n\nالتفاصيل: ${context}`
-    : "مرحبًا، أحتاج إلى مساعدة بخصوص نظام مواقف سيارات الأكاديمية الوطنية للبناء.";
-
-  const url = `https://wa.me/${CUSTOMER_SUPPORT_PHONE}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank", "noopener,noreferrer");
-}
-
-document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-whatsapp-support]");
-  if (!button) return;
-  event.preventDefault();
-  openCustomerSupportWhatsApp(button.getAttribute("data-whatsapp-context") || "");
-});
 
 
 // استبدل هذه القيم ببيانات مشروعك في Supabase
@@ -789,12 +768,7 @@ async function updateHeaderCarCounter() {
                             <button class="btn btn-primary" onclick="contactOwner('${safePhoneNumber}', '${safeOwnerName}')">
                                 <i class="fas fa-phone-alt"></i> اتصل
                             </button>
-                            
-                            <button class="btn btn-success" onclick="whatsappOwner('${safePhoneNumber}', '${safeOwnerName}')">
-                                <i class="fas fa-brands fa-whatsapp"></i> واتساب
-                            </button>
-                            
-                            ${
+${
                               canEdit
                                 ? `
                             <button class="btn btn-warning" onclick="editCar('${car.id}')">
@@ -1115,10 +1089,7 @@ async function updateHeaderCarCounter() {
             showAlert(
               "carFormAlert",
               `❌ <strong>هذه السيارة مسجلة مسبقًا</strong><br>
-               لا يمكن إضافة نفس البيانات مرة أخرى.<br>
-               <a href="#" data-whatsapp-support data-whatsapp-context="مشكلة في تسجيل السيارة المكررة">
-                 <i class="fab fa-whatsapp"></i> التواصل مع خدمة العملاء عبر واتساب
-               </a>`,
+               لا يمكن إضافة نفس البيانات مرة أخرى.`,
               "warning"
             );
             return;
@@ -1182,10 +1153,7 @@ async function updateHeaderCarCounter() {
               showAlert(
                 "carFormAlert",
                 `❌ <strong>هذه السيارة مسجلة مسبقًا</strong><br>
-                 تم العثور على تسجيل مطابق لبيانات السيارة، لذلك لم تتم إضافة سجل جديد.<br>
-                 <a href="#" data-whatsapp-support data-whatsapp-context="السيارة مسجلة مسبقًا">
-                   <i class="fab fa-whatsapp"></i> التواصل مع خدمة العملاء عبر واتساب
-                 </a>`,
+                 تم العثور على تسجيل مطابق لبيانات السيارة، لذلك لم تتم إضافة سجل جديد.`,
                 "warning",
               );
               return;
@@ -1201,10 +1169,7 @@ async function updateHeaderCarCounter() {
               showAlert(
                 "carFormAlert",
                 `❌ تعذر حفظ البيانات حاليًا.<br>
-                 يرجى المحاولة مرة أخرى، وإذا استمرت المشكلة
-                 <a href="#" data-whatsapp-support data-whatsapp-context="تعذر حفظ بيانات السيارة">
-                   تواصل مع خدمة العملاء عبر واتساب
-                 </a>.`,
+                 يرجى المحاولة مرة أخرى.`,
                 "danger",
               );
             }
@@ -1390,13 +1355,6 @@ async function updateHeaderCarCounter() {
         }
       }
 
-      // التواصل مع المالك عبر الواتساب
-      function whatsappOwner(phoneNumber, ownerName) {
-        const message = `مرحباً ${ownerName}، أتصل بخصوص سيارتك في موقف الأكاديمية الوطنية للبناء.`;
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, "_blank");
-      }
-
       // وظائف المساعدة
       function showPage(pageId) {
         const target = document.getElementById(pageId);
@@ -1408,11 +1366,30 @@ async function updateHeaderCarCounter() {
       }
 
       function showModal(modalId) {
-        document.getElementById(modalId).classList.add("active");
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        modal.classList.add("active");
+        document.body.classList.add("modal-open");
+
+        const scrollBtn = document.getElementById("scrollToBottomBtn");
+        if (scrollBtn) {
+          scrollBtn.classList.add("hidden");
+        }
       }
 
       function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove("active");
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        modal.classList.remove("active");
+
+        const anotherModalIsOpen = document.querySelector(".modal.active");
+
+        if (!anotherModalIsOpen) {
+          document.body.classList.remove("modal-open");
+          window.dispatchEvent(new Event("scroll"));
+        }
 
         // تنظيف الحقول في نموذج المدير
         if (modalId === "adminLoginModal") {
