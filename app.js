@@ -1,4 +1,4 @@
-// NCA Parking JS build: 20260909-07
+// NCA Parking JS build: 20260909-08
 
 // زر النزول السريع لأسفل الصفحة
       function setupScrollBottomButton() {
@@ -1390,83 +1390,103 @@ ${
 
       // حذف سيارة
       async function deleteCar(carId) {
+        const confirmBtn = document.getElementById("confirmDeleteBtn");
+
+        if (!carId) {
+          showAlert(
+            "mainAlert",
+            "❌ تعذر تحديد السيارة المطلوب حذفها.",
+            "danger",
+          );
+          return;
+        }
+
+        if (confirmBtn) {
+          confirmBtn.disabled = true;
+          confirmBtn.style.opacity = "0.65";
+        }
+
         try {
-          console.log("🗑️ جاري حذف السيارة:", carId);
+          console.log("🗑️ جاري تعطيل السيارة بأمان:", carId);
 
-          // أولاً، نتحقق مما إذا كانت السيارة موجودة
-          const { data: existingCar, error: fetchError } = await supabaseClient
-            .from("cars")
-            .select("*")
-            .eq("id", carId)
-            .single();
-
-          if (fetchError) {
-            console.error("❌ خطأ في جلب بيانات السيارة:", fetchError);
-            showAlert(
-              "mainAlert",
-              "❌ السيارة غير موجودة أو لا يمكن الوصول إليها",
-              "danger",
-            );
-            return;
-          }
-
-          // التحقق من أن المستخدم هو المالك أو المدير
-          if (existingCar.device_id !== deviceId && !isAdmin) {
-            showAlert(
-              "mainAlert",
-              "❌ ليس لديك صلاحية حذف هذه السيارة",
-              "danger",
-            );
-            return;
-          }
-
-          // تحديث الحالة إلى inactive بدلاً من الحذف الفعلي
-          const { error } = await supabaseClient
-            .from("cars")
-            .update({
-              status: "inactive",
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", carId);
+          // الحذف في النظام حذف آمن:
+          // لا نمسح السجل من قاعدة البيانات، بل نغيّر status إلى inactive.
+          // الدالة داخل Supabase تتحقق من x-device-id قبل تنفيذ العملية.
+          const { data, error } = await supabaseClient.rpc(
+            "deactivate_my_car",
+            {
+              p_car_id: carId,
+            },
+          );
 
           if (error) {
-            console.error("❌ خطأ في حذف السيارة:", error);
+            console.error("❌ خطأ في تعطيل السيارة:", error);
 
-            if (error.message.includes("permission denied")) {
+            const rawMessage = String(error.message || "").toLowerCase();
+
+            if (
+              rawMessage.includes("missing_device_id") ||
+              rawMessage.includes("permission") ||
+              rawMessage.includes("not authorized") ||
+              rawMessage.includes("42501")
+            ) {
               showAlert(
                 "mainAlert",
-                "❌ ليس لديك صلاحية لحذف هذه السيارة. تأكد من سياسات الأمان في قاعدة البيانات.",
+                "❌ لم يتم حذف السيارة لأن النظام لم يستطع التحقق من ملكيتها لهذا الجهاز.",
                 "danger",
               );
             } else {
               showAlert(
                 "mainAlert",
-                `❌ حدث خطأ في حذف السيارة: ${error.message}`,
+                `❌ تعذر حذف السيارة حاليًا: ${error.message || "خطأ غير معروف"}`,
                 "danger",
               );
             }
             return;
           }
 
+          if (data !== true) {
+            console.warn("⚠️ لم يتم العثور على سجل قابل للتعطيل:", carId);
+
+            showAlert(
+              "mainAlert",
+              "⚠️ لم يتم حذف السيارة. قد تكون محذوفة مسبقًا أو لا تخص هذا الجهاز.",
+              "warning",
+            );
+            return;
+          }
+
           closeModal("confirmDeleteModal");
-          showAlert("mainAlert", "✅ تم حذف السيارة بنجاح", "success");
+          carToDelete = null;
 
-          // تحديث القوائم
-          setTimeout(() => {
-            loadCars();
-            checkMyCars();
-
-            if (currentPage === "myCarsPage") {
-              showMyCars();
-            }
-          }, 1000);
-        } catch (error) {
-          console.error("❌ خطأ غير متوقع في حذف السيارة:", error);
+          // إذا كان المستخدم داخل صفحة سياراتي، نعرض النجاح هناك
+          // عبر إعادة تحميل الصفحة فورًا؛ وفي الرئيسية يظهر mainAlert.
           showAlert(
             "mainAlert",
-            `❌ حدث خطأ غير متوقع: ${error.message}`,
+            "✅ تم حذف السيارة من السيارات النشطة بنجاح، مع الاحتفاظ بالسجل في قاعدة البيانات.",
+            "success",
+          );
+
+          await loadCars();
+          await checkMyCars();
+          await updateHeaderCarCounter();
+
+          if (currentPage === "myCarsPage") {
+            await showMyCars();
+          }
+        } catch (error) {
+          console.error("❌ خطأ غير متوقع في حذف السيارة:", error);
+
+          showAlert(
+            "mainAlert",
+            `❌ حدث خطأ غير متوقع أثناء حذف السيارة: ${error.message || "خطأ غير معروف"}`,
             "danger",
           );
+        } finally {
+          if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.style.opacity = "1";
+          }
         }
       }
 
@@ -1642,10 +1662,11 @@ ${
         modal.classList.add("active");
         document.body.classList.add("modal-open");
 
-        const scrollBtn = document.getElementById("scrollToBottomBtn");
-        if (scrollBtn) {
-          scrollBtn.classList.add("hidden");
-        }
+        const scrollDownBtn = document.getElementById("scrollToBottomBtn");
+        const scrollUpBtn = document.getElementById("scrollToTopBtn");
+
+        if (scrollDownBtn) scrollDownBtn.classList.add("hidden");
+        if (scrollUpBtn) scrollUpBtn.classList.add("hidden");
       }
 
       function closeModal(modalId) {
